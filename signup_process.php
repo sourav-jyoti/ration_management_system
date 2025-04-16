@@ -8,11 +8,13 @@ if ($conn->connect_error) {
 $username = $_POST['username'];
 $password = $_POST['password'];
 $designation = $_POST['designation'];
+$email = $_POST['email'];
+
 $dealer_id = ($designation === 'customer') ? $_POST['dealer_id'] : NULL;
 
-$sql = "INSERT INTO users (username, password, designation, dealer_id) VALUES (?, ?, ?, ?)";
+$sql = "INSERT INTO users (username, password, designation,email,dealer_id) VALUES (?, ?, ?, ?,?)";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("sssi", $username, $password, $designation, $dealer_id);
+$stmt->bind_param("ssssi", $username, $password, $designation,$email,$dealer_id);
 
 if ($stmt->execute()) {
     if ($designation === 'dealer') {

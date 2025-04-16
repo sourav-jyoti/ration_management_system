@@ -26,8 +26,29 @@ $stmt->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dealer - Submit for <?php echo htmlspecialchars($customer['username']); ?> Month <?php echo $month; ?></title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .header {
+            background-color: #f8fafc;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e5e7eb;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body class="bg-gray-100 p-6">
+    <header class="header">
+        <div class="flex items-center">
+            <h1 class="text-xl font-bold">Submit Distribution Details</h1>
+        </div>
+        <div>
+            <a href="dealer_customer.php?customer_id=<?php echo $customer_id; ?>" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 mr-2">Back to Customer</a>
+            <a href="dealer_inventory.php" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 mr-2">View Inventory</a>
+            <a href="logout.php" class="bg-red-500 text-white p-2 rounded hover:bg-red-600">Logout</a>
+        </div>
+    </header>
     <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-lg">
         <h2 class="text-2xl font-bold mb-6">Submit for <?php echo htmlspecialchars($customer['username']); ?> - Month <?php echo $month; ?></h2>
         <form action="submit_dealer.php" method="POST" enctype="multipart/form-data">
@@ -62,7 +83,6 @@ $stmt->close();
             </div>
             <button type="submit" class="mt-6 w-full bg-green-500 text-white p-2 rounded hover:bg-green-600">Submit</button>
         </form>
-        <a href="dealer_customer.php?customer_id=<?php echo $customer_id; ?>" class="mt-4 inline-block text-blue-500">Back to Dashboard</a>
     </div>
 </body>
 </html>

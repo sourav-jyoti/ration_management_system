@@ -51,60 +51,190 @@ $next_month = $latest_month + 1;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($dealer['username']); ?> Dashboard - <?php echo htmlspecialchars($customer['username']); ?></title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .header {
+            background-color: #f8fafc;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e5e7eb;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+        }
+        .month-card {
+            transition: all 0.2s ease;
+        }
+        .month-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+        }
+        .stats-card {
+            transition: transform 0.2s;
+        }
+        .stats-card:hover {
+            transform: scale(1.02);
+        }
+    </style>
 </head>
-<body class="bg-gray-100 p-6">
-    <div class="max-w-6xl mx-auto bg-white p-6 rounded-lg shadow-lg relative">
-        <h2 class="text-2xl font-bold mb-6"><?php echo htmlspecialchars($dealer['username']); ?> Dashboard - <?php echo htmlspecialchars($customer['username']); ?></h2>
-        
-        <!-- Button to submit next month -->
-        <a href="dealer_submit.php?customer_id=<?php echo $customer_id; ?>&month=<?php echo $next_month; ?>" class="absolute top-6 right-6 bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Submit Month <?php echo $next_month; ?></a>
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+    <header class="header">
+        <div class="flex items-center space-x-4">
+            <div class="bg-blue-100 p-2 rounded-full">
+                <i class="fas fa-store text-blue-600 text-xl"></i>
+            </div>
+            <div>
+                <h1 class="text-xl font-bold text-gray-800">Welcome, <?php echo htmlspecialchars($dealer['username']); ?></h1>
+                <p class="text-sm text-gray-600">Customer Management</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-3">
+            <a href="dealer_dashboard.php" 
+               class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors flex items-center">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Back to Customers
+            </a>
+            <a href="dealer_inventory.php" 
+               class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors flex items-center">
+                <i class="fas fa-warehouse mr-2"></i>
+                View Inventory
+            </a>
+            <a href="logout.php" 
+               class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors flex items-center">
+                <i class="fas fa-sign-out-alt mr-2"></i>
+                Logout
+            </a>
+        </div>
+    </header>
 
-        <!-- Previous Submissions -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <?php
-            $result->data_seek(0); // Reset result pointer
-            while ($submission = $result->fetch_assoc()):
-                $dealer_data = [
-                    $submission['pulses_dealer'],
-                    $submission['rice_dealer'],
-                    $submission['mustard_oil_dealer'],
-                    $submission['potato_dealer'],
-                    $submission['soyabean_dealer']
-                ];
-                $customer_data = [
-                    $submission['pulses_customer'],
-                    $submission['rice_customer'],
-                    $submission['mustard_oil_customer'],
-                    $submission['potato_customer'],
-                    $submission['soyabean_customer']
-                ];
-                $border_class = 'border-gray-400'; // Default grey
-                if ($submission['pulses_customer'] !== null) { // Customer has submitted
-                    $match = true;
-                    for ($i = 0; $i < 5; $i++) {
-                        if ($dealer_data[$i] != $customer_data[$i]) {
-                            $match = false;
-                            break;
-                        }
-                    }
-                    $border_class = $match ? 'border-green-500' : 'border-red-500';
-                }
-            ?>
-                <div class="bg-gray-200 p-4 rounded-lg shadow border-2 <?php echo $border_class; ?>">
-                    <h3 class="text-lg font-semibold mb-2">Month <?php echo $submission['month']; ?></h3>
-                    <p>Pulses: <?php echo $submission['pulses_dealer']; ?> kg</p>
-                    <p>Rice: <?php echo $submission['rice_dealer']; ?> kg</p>
-                    <p>Mustard Oil: <?php echo $submission['mustard_oil_dealer']; ?> L</p>
-                    <p>Potato: <?php echo $submission['potato_dealer']; ?> kg</p>
-                    <p>Soyabean: <?php echo $submission['soyabean_dealer']; ?> kg</p>
+    <div class="max-w-6xl mx-auto px-4">
+        <!-- Customer Info Card -->
+        <div class="bg-white p-6 rounded-lg shadow-lg mb-8">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="bg-blue-100 p-3 rounded-full">
+                        <i class="fas fa-user text-blue-600 text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800"><?php echo htmlspecialchars($customer['username']); ?></h2>
+                        <p class="text-gray-600">Customer ID: <?php echo $customer_id; ?></p>
+                    </div>
                 </div>
-            <?php endwhile; ?>
-            <?php if ($result->num_rows == 0): ?>
-                <p class="col-span-full text-center text-gray-500">No submissions yet.</p>
-            <?php endif; ?>
+                <a href="dealer_submit.php?customer_id=<?php echo $customer_id; ?>&month=<?php echo $next_month; ?>" 
+                   class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors flex items-center">
+                    <i class="fas fa-plus-circle mr-2"></i>
+                    Submit Month <?php echo $next_month; ?>
+                </a>
+            </div>
         </div>
 
-        <a href="dealer_dashboard.php" class="mt-6 inline-block text-blue-500">Back to Customers</a>
+        <!-- Submissions Grid -->
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h3 class="text-xl font-bold text-gray-800">Monthly Submissions</h3>
+                    <p class="text-gray-600 mt-1">Track distribution records</p>
+                </div>
+                <div class="bg-purple-100 p-3 rounded-full">
+                    <i class="fas fa-calendar-alt text-purple-600 text-xl"></i>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <?php
+                $result->data_seek(0); // Reset result pointer
+                while ($submission = $result->fetch_assoc()):
+                    $dealer_data = [
+                        $submission['pulses_dealer'],
+                        $submission['rice_dealer'],
+                        $submission['mustard_oil_dealer'],
+                        $submission['potato_dealer'],
+                        $submission['soyabean_dealer']
+                    ];
+                    $customer_data = [
+                        $submission['pulses_customer'],
+                        $submission['rice_customer'],
+                        $submission['mustard_oil_customer'],
+                        $submission['potato_customer'],
+                        $submission['soyabean_customer']
+                    ];
+                    $match = true;
+                    $status_class = 'border-gray-200';
+                    $status_bg = 'bg-gray-50';
+                    $status_text = 'Pending';
+                    $status_icon = 'clock';
+                    $status_color = 'text-gray-600';
+
+                    if ($submission['pulses_customer'] !== null) {
+                        $match = true;
+                        for ($i = 0; $i < 5; $i++) {
+                            if ($dealer_data[$i] != $customer_data[$i]) {
+                                $match = false;
+                                break;
+                            }
+                        }
+                        if ($match) {
+                            $status_class = 'border-green-200';
+                            $status_bg = 'bg-green-50';
+                            $status_text = 'Matched with customer';
+                            $status_icon = 'check-circle';
+                            $status_color = 'text-green-600';
+                        } else {
+                            $status_class = 'border-red-200';
+                            $status_bg = 'bg-red-50';
+                            $status_text = 'Mismatch';
+                            $status_icon = 'exclamation-circle';
+                            $status_color = 'text-red-600';
+                        }
+                    }
+                ?>
+                    <div class="month-card rounded-lg border-2 <?php echo $status_class; ?> <?php echo $status_bg; ?> overflow-hidden">
+                        <div class="p-4">
+                            <div class="flex items-center justify-between mb-4">
+                                <h4 class="text-lg font-semibold text-gray-800">Month <?php echo $submission['month']; ?></h4>
+                                <div class="flex items-center <?php echo $status_color; ?>">
+                                    <i class="fas fa-<?php echo $status_icon; ?> mr-2"></i>
+                                    <span class="text-sm font-medium"><?php echo $status_text; ?></span>
+                                </div>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-600"><i class="fas fa-seedling mr-2"></i>Pulses</span>
+                                    <span class="font-medium"><?php echo $submission['pulses_dealer']; ?> kg</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-600"><i class="fas fa-bowl-rice mr-2"></i>Rice</span>
+                                    <span class="font-medium"><?php echo $submission['rice_dealer']; ?> kg</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-600"><i class="fas fa-oil-can mr-2"></i>Mustard Oil</span>
+                                    <span class="font-medium"><?php echo $submission['mustard_oil_dealer']; ?> L</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-600"><i class="fas fa-apple-whole mr-2"></i>Potato</span>
+                                    <span class="font-medium"><?php echo $submission['potato_dealer']; ?> kg</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-600"><i class="fas fa-leaf mr-2"></i>Soyabean</span>
+                                    <span class="font-medium"><?php echo $submission['soyabean_dealer']; ?> kg</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php endwhile; ?>
+
+                <?php if ($result->num_rows == 0): ?>
+                    <div class="col-span-full text-center py-8">
+                        <div class="bg-gray-100 rounded-full p-3 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                            <i class="fas fa-clipboard-list text-gray-400 text-2xl"></i>
+                        </div>
+                        <h3 class="text-gray-500 font-medium">No submissions yet</h3>
+                        <p class="text-gray-400 text-sm">Start by submitting your first month's distribution.</p>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
     </div>
 </body>
 </html>

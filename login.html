@@ -5,22 +5,316 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Food Management</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+        
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            backdrop-filter: blur(3px);
+            transition: all 0.3s ease;
+        }
+        
+        .popup-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 25px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            transform: translateY(-20px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .popup.active .popup-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .form-card {
+            transition: all 0.3s ease;
+        }
+        
+        .form-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .input-group {
+            position: relative;
+        }
+        
+        .input-icon {
+            position: absolute;
+            top: 50%;
+            left: 10px;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+        
+        .input-with-icon {
+            padding-left: 35px !important;
+        }
+        
+        .toggle-password {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #6c757d;
+        }
+        
+        .btn-gradient {
+            background: linear-gradient(135deg, #4c6ef5 0%, #3b5bdb 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-gradient:hover {
+            background: linear-gradient(135deg, #3b5bdb 0%, #364fc7 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(59, 91, 219, 0.4);
+        }
+        
+        .shine-effect {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .shine-effect::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to right,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.3) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            transform: rotate(30deg);
+            animation: shine 3s infinite;
+        }
+        
+        @keyframes shine {
+            0% {
+                left: -100%;
+                opacity: 0;
+            }
+            10% {
+                left: -100%;
+                opacity: 0.5;
+            }
+            20% {
+                left: 100%;
+                opacity: 0;
+            }
+            100% {
+                left: 100%;
+                opacity: 0;
+            }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+    </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center h-screen">
-    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-        <h2 class="text-2xl font-bold mb-6 text-center">Login</h2>
-        <form action="login.php" method="POST">
-            <div class="mb-4">
-                <label class="block text-gray-700">Username</label>
-                <input type="text" name="username" class="w-full p-2 border rounded" required>
+<body class="flex items-center justify-center h-screen">
+    <div class="w-full max-w-md px-4">
+        <div class="form-card bg-white p-8 rounded-lg shadow-xl mb-4 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-2 h-full bg-blue-500"></div>
+            
+            <div class="flex justify-center mb-6">
+                <div class="h-16 w-16 rounded-full bg-blue-50 flex items-center justify-center shine-effect">
+                    <i class="fas fa-utensils text-blue-500 text-2xl"></i>
+                </div>
             </div>
-            <div class="mb-4">
-                <label class="block text-gray-700">Password</label>
-                <input type="password" name="password" class="w-full p-2 border rounded" required>
+            
+            <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Welcome Back</h2>
+            
+            <form action="login.php" method="POST">
+                <div class="mb-5 input-group">
+                    <i class="fas fa-user input-icon"></i>
+                    <input 
+                        type="text" 
+                        name="username" 
+                        class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-with-icon transition duration-200" 
+                        placeholder="Username"
+                        required
+                    >
+                </div>
+                
+                <div class="mb-5 input-group">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input 
+                        type="password" 
+                        name="password" 
+                        id="password" 
+                        class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-with-icon transition duration-200" 
+                        placeholder="Password"
+                        required
+                    >
+                    <i class="far fa-eye toggle-password" onclick="togglePassword()"></i>
+                </div>
+                
+                <button 
+                    type="submit" 
+                    class="w-full btn-gradient text-white p-3 rounded-lg font-medium hover:bg-blue-600 transition duration-200"
+                >
+                    Sign In
+                </button>
+            </form>
+            
+            <div class="mt-6 flex items-center justify-center">
+                <div class="border-t border-gray-300 flex-grow mr-3"></div>
+                <p class="text-sm text-gray-500">OR</p>
+                <div class="border-t border-gray-300 flex-grow ml-3"></div>
             </div>
-            <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Login</button>
-        </form>
-        <p class="mt-4 text-center">Don't have an account? <a href="signup.php" class="text-blue-500">Sign Up</a></p>
+            
+            <p class="mt-4 text-center">
+                <button 
+                    onclick="showPopup()" 
+                    class="text-blue-500 hover:text-blue-700 font-medium transition duration-200 text-sm flex items-center justify-center mx-auto"
+                >
+                    <i class="fas fa-key mr-2"></i> Forgot Password?
+                </button>
+            </p>
+            
+            <p class="mt-5 text-center text-gray-600">
+                Don't have an account? 
+                <a 
+                    href="signup.php" 
+                    class="text-blue-500 hover:text-blue-700 font-medium transition duration-200"
+                >
+                    Sign Up
+                </a>
+            </p>
+        </div>
+        
+        <p class="text-center text-gray-500 text-sm">© 2025 Food Management System</p>
     </div>
+
+    <div id="forgotPasswordPopup" class="popup">
+        <div class="popup-content">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold text-gray-800">Reset Password</h2>
+                <button onclick="closePopup()" class="text-gray-500 hover:text-gray-700 transition duration-200">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <p class="text-gray-600 mb-6 text-sm">Enter your username and phone number to receive your password via email.</p>
+            
+            <form action="reset_password.php" method="POST">
+                <div class="mb-4 input-group">
+                    <i class="fas fa-user input-icon"></i>
+                    <input 
+                        type="text" 
+                        name="username" 
+                        class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-with-icon transition duration-200" 
+                        placeholder="Username"
+                        required
+                    >
+                </div>
+                
+                <div class="mb-5 input-group">
+                    <i class="fas fa-phone input-icon"></i>
+                    <input 
+                        type="tel" 
+                        name="phone" 
+                        class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-with-icon transition duration-200" 
+                        placeholder="Phone Number"
+                        required
+                    >
+                </div>
+                
+                <div class="flex justify-end space-x-3">
+                    <button 
+                        type="button" 
+                        onclick="closePopup()" 
+                        class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition duration-200"
+                    >
+                        Cancel
+                    </button>
+                    
+                    <button 
+                        type="submit" 
+                        class="px-4 py-2 btn-gradient text-white rounded-lg transition duration-200"
+                    >
+                        Reset Password
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function showPopup() {
+            const popup = document.getElementById('forgotPasswordPopup');
+            popup.style.display = 'block';
+            setTimeout(() => {
+                popup.classList.add('active');
+            }, 10);
+        }
+
+        function closePopup() {
+            const popup = document.getElementById('forgotPasswordPopup');
+            popup.classList.remove('active');
+            setTimeout(() => {
+                popup.style.display = 'none';
+            }, 300);
+        }
+        
+        function togglePassword() {
+            const password = document.getElementById('password');
+            const toggleIcon = document.querySelector('.toggle-password');
+            
+            if (password.type === 'password') {
+                password.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                password.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
+            }
+        }
+        
+        // Close popup when clicking outside
+        window.onclick = function(event) {
+            const popup = document.getElementById('forgotPasswordPopup');
+            if (event.target == popup) {
+                closePopup();
+            }
+        }
+    </script>
 </body>
 </html>
