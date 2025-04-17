@@ -9,12 +9,13 @@ $username = $_POST['username'];
 $password = $_POST['password'];
 $designation = $_POST['designation'];
 $email = $_POST['email'];
+$phone=$_POST['phone'];
 
 $dealer_id = ($designation === 'customer') ? $_POST['dealer_id'] : NULL;
 
-$sql = "INSERT INTO users (username, password, designation,email,dealer_id) VALUES (?, ?, ?, ?,?)";
+$sql = "INSERT INTO users (username, password, designation,email,dealer_id,phone) VALUES (?, ?, ?, ?,?,?)";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("ssssi", $username, $password, $designation,$email,$dealer_id);
+$stmt->bind_param("ssssis", $username, $password, $designation,$email,$dealer_id,$phone);
 
 if ($stmt->execute()) {
     if ($designation === 'dealer') {
