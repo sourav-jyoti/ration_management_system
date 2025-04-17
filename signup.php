@@ -183,10 +183,26 @@
         .fade-in {
             animation: fadeIn 0.3s ease forwards;
         }
+        .alert-box {
+        display: none;
+        }
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen py-10">
+    
+
     <div class="w-full max-w-md px-4">
+        <!-- Alert box -->
+    <div id="alertBox" class="alert-box bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+      <strong class="font-bold">Oops!</strong>
+      <span class="block sm:inline" id="alertMessage">Password too short.</span>
+      <span onclick="hideAlert()" class="absolute top-0 bottom-0 right-0 px-4 py-3 cursor-pointer">
+        <svg class="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+          <title>Close</title>
+          <path d="M14.348 5.652a1 1 0 0 0-1.414 0L10 8.586 7.066 5.652a1 1 0 1 0-1.414 1.414L8.586 10l-2.934 2.934a1 1 0 1 0 1.414 1.414L10 11.414l2.934 2.934a1 1 0 0 0 1.414-1.414L11.414 10l2.934-2.934a1 1 0 0 0 0-1.414z"/>
+        </svg>
+      </span>
+    </div>
         <div class="form-card bg-white p-8 rounded-lg shadow-xl mb-4 relative overflow-hidden">
             <div class="absolute top-0 left-0 w-2 h-full bg-blue-500"></div>
             
@@ -199,7 +215,7 @@
             <h2 class="text-2xl font-bold mb-2 text-center text-gray-800">Join Our Community</h2>
             <p class="text-center text-gray-600 mb-6 text-sm">Create an account to get started</p>
             
-            <form action="signup_process.php" method="POST">
+            <form action="signup_process.php" method="POST" onsubmit = "return validateForm()">
                 <div class="mb-4 input-group">
                     <i class="fas fa-user input-icon"></i>
                     <input 
@@ -392,6 +408,24 @@
                 statusText.classList.add('status-strong');
             }
         }
+
+
+        function validateForm() {
+            const pwd = document.getElementById('password').value;
+            if (pwd.length < 4) {
+                showAlert("Password must be at least 4 characters.");
+                 return false;
+            }
+                return true;
+            }
+        function showAlert(message) {
+            document.getElementById("alertMessage").innerText = message;
+            document.getElementById("alertBox").style.display = "block";
+        }
+
+        function hideAlert() {
+            document.getElementById("alertBox").style.display = "none";
+        }
     </script>
 </body>
-</html>
+</html>"
